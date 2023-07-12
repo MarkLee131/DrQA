@@ -77,10 +77,12 @@ def has_answer(answer, doc_id, match):
 def get_score(answer_doc, match):
     """Search through all the top docs to see if they have the answer."""
     answer, (doc_ids, doc_scores) = answer_doc
+    pos = 0
     for doc_id in doc_ids:
+        pos += 1
         if has_answer(answer, doc_id, match):
-            return 1
-    return 0
+            return (pos, doc_scores)
+    return (-1, doc_scores)
 
 
 # ------------------------------------------------------------------------------
@@ -148,22 +150,29 @@ if __name__ == '__main__':
     logger.info('Retrieving and computing scores...')
     get_score_partial = partial(get_score, match=args.match)
     scores = processes.map(get_score_partial, answers_docs)
+    import numpy as np
+    training_file = '/data/kaixuan/DrQA'
+    with open(training_file, "w") as f:
+        for pos, score in scores:
+            f.write('{},{}\n'.format(pos, 
+                                    np.array2string(score, separator=',', 
+                                                    max_line_width=999999)[1:-1]))
 
-    filename = os.path.basename(args.dataset)
-    stats = (
-        "\n" + "-" * 50 + "\n" +
-        "{filename}\n" +
-        "Examples:\t\t\t{total}\n" +
-        "Matches in top {k}:\t\t{m}\n" +
-        "Match % in top {k}:\t\t{p:2.2f}\n" +
-        "Total time:\t\t\t{t:2.4f} (s)\n"
-    ).format(
-        filename=filename,
-        total=len(scores),
-        k=args.n_docs,
-        m=sum(scores),
-        p=(sum(scores) / len(scores) * 100),
-        t=time.time() - start,
-    )
+    # filename = os.path.basename(args.dataset)
+    # stats = (
+    #     "\n" + "-" * 50 + "\n" +
+    #     "{filename}\n" +
+    #     "Examples:\t\t\t{total}\n" +
+    #     "Matches in top {k}:\t\t{m}\n" +
+    #     "Match % in top {k}:\t\t{p:2.2f}\n" +
+    #     "Total time:\t\t\t{t:2.4f} (s)\n"
+    # ).format(
+    #     filename=filename,
+    #     total=len(scores),
+    #     k=args.n_docs,
+    #     m=sum(scores),
+    #     p=(sum(scores) / len(scores) * 100),
+    #     t=time.time() - start,
+    # )
 
-    print(stats)
+    # print(stats)

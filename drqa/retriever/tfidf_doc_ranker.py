@@ -67,6 +67,7 @@ class TfidfDocRanker(object):
 
         doc_scores = res.data[o_sort]
         doc_ids = [self.get_doc_id(i) for i in res.indices[o_sort]]
+        doc_scores = doc_scores/np.sum(doc_scores)
         return doc_ids, doc_scores
 
     def batch_closest_docs(self, queries, k=1, num_workers=None):
