@@ -151,7 +151,7 @@ if __name__ == '__main__':
     get_score_partial = partial(get_score, match=args.match)
     scores = processes.map(get_score_partial, answers_docs)
     import numpy as np
-    training_file = '/data/kaixuan/DrQA'
+    training_file = '/mnt/local/Baselines_Bugs/DrQA/data/adaptive_data/train.txt'
     with open(training_file, "w") as f:
         for pos, score in scores:
             f.write('{},{}\n'.format(pos, 

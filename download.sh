@@ -38,7 +38,7 @@ wget -O "$DATASET_PATH/SQuAD-v1.1-dev.json" "https://rajpurkar.github.io/SQuAD-e
 python scripts/convert/squad.py "$DATASET_PATH/SQuAD-v1.1-dev.json" "$DATASET_PATH/SQuAD-v1.1-dev.txt"
 
 # Download official eval for SQuAD
-curl "https://worksheets.codalab.org/rest/bundles/0xbcd57bee090b421c982906709c8c27e1/contents/blob/" >  "./scripts/reader/official_eval.py"
+wget -O "./scripts/reader/official_eval.py" "https://worksheets.codalab.org/rest/bundles/0xbcd57bee090b421c982906709c8c27e1/contents/blob/"
 
 # Get WebQuestions train
 wget -O "$DATASET_PATH/WebQuestions-train.json.bz2" "http://nlp.stanford.edu/static/software/sempre/release-emnlp2013/lib/data/webquestions/dataset_11/webquestions.examples.train.json.bz2"
